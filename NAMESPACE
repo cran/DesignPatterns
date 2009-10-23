@@ -1,0 +1,6 @@
+## encapsulation
+export("getS4SlotGSetterGenericAndMethods",
+       "getS4AllSlotsGSetterGenericAndMethods",
+       "writeS4SlotGSetterGenericAndMethods",
+       "writeS4AllSlotsGSetterGenericAndMethods"
+       )
