@@ -4,6 +4,9 @@
 \alias{getS4AllSlotsGSetterGenericAndMethods}
 \alias{writeS4SlotGSetterGenericAndMethods}
 \alias{writeS4AllSlotsGSetterGenericAndMethods}
+\alias{getOwnSlotNames}
+\alias{getS4AllOwnSlotsGSetterGenericAndMethods}
+\alias{writeS4AllOwnSlotsGSetterGenericAndMethods}
 %% private functions
 %\alias{printGSetterGenericWithFormatString}
 %\alias{printGetterGenericWithFormatString}
@@ -14,7 +17,7 @@
 \description{
   Automatic wrapping getter and setter (GSetter) generics and methods for S4 classes,
   like the functionality implemented in many IDEs for other programming
-  languagues like Java or C#. 
+  languagues like Java or C#.
 }
 \usage{
 getS4SlotGSetterGenericAndMethods(class, slot)
@@ -22,6 +25,10 @@ getS4AllSlotsGSetterGenericAndMethods(class)
 
 writeS4SlotGSetterGenericAndMethods(class, slot, con=stdout(), ...)
 writeS4AllSlotsGSetterGenericAndMethods(class, con=stdout(),...)
+
+getOwnSlotNames(class)
+getS4AllOwnSlotsGSetterGenericAndMethods(class)
+writeS4AllOwnSlotsGSetterGenericAndMethods(class, con=stdout(),...)
 }
 \arguments{
   \item{class}{Name of a S4 class}
@@ -45,10 +52,19 @@ writeS4AllSlotsGSetterGenericAndMethods(class, con=stdout(),...)
   need them.
 
   \code{getS4AllSlotsGSetterGenericAndMethods} returns the generics
-  and methods of getters and setters of all slots in the speicified
+  and methods of getters and setters of all slots in the specified
   class in the form of a vector of character strings. User could use
   \code{writeS4AllSlotsGSetterGenericAndMethods} to write them into
   plain text files, which can be moved later to the R package.
+
+  \code{getS4AllOwnSlotsGSetterGenericANdMethods} returns the generic
+  and methods of getters and setter of all \emph{own} slots in the
+  specified class, that is, excluding the ones defined by its known
+  superclass. Its use is similar to
+  \code{getS4AllSlotsGSetterGenericANdMethods}. It also has the
+  \sQuote{write} wrapper for easy output. It calls
+  \code{getOwnSlotNames} to determine the slots owned merely by the extended
+  class.
   
 }
 \value{
@@ -78,7 +94,15 @@ cat(getS4SlotGSetterGenericAndMethods("track", "xx"), "\n")
 writeS4SlotGSetterGenericAndMethods("track", "xx", con=stdout())
 
 
+
 cat(getS4AllSlotsGSetterGenericAndMethods("track"), "\n")
-## one could also call
-writeS4AllSlotsGSetterGenericAndMethods("track", con=stdout())
+tmp <- tempfile()
+writeS4AllSlotsGSetterGenericAndMethods("track", con=tmp)
+source(tmp)
+
+## show subclass
+setClass("carTrack", representation(carName="character"), contains="track")
+cat(getS4AllOwnSlotsGSetterGenericAndMethods("carTrack"), "\n")
+## alternatively
+writeS4AllOwnSlotsGSetterGenericAndMethods("carTrack", con=stdout())
 }

@@ -15,8 +15,8 @@ the book 'Gang of Four'.
 \tabular{ll}{
 Package: \tab DesignPattern\cr
 Type: \tab Package\cr
-Version: \tab 0.1.0\cr
-Date: \tab 2009-10-23\cr
+Version: \tab 0.1.2\cr
+Date: \tab 2009-10-27\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }

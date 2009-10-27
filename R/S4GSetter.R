@@ -3,6 +3,11 @@
 ##------------------------------------------------------------##
 ## Internal functions
 ##------------------------------------------------------------##
+## vectorized lapply
+vlapply <- function(X, FUN, ...) {
+  unlist(lapply(X=X, FUN=FUN,...))
+}
+
 printGSetterGenericWithFormatString <- function(formatString, slot) {
   sprintf(formatString, slot, slot)
 }
@@ -30,6 +35,14 @@ printSetterMethodWithFormatString <- function(class, slot) {
   sprintf(G_setterMethodFormatString, slot, class, slotValueType, slot)
 }
 
+getOwnSlotNames <- function(class) {
+  slots <- slotNames(class)
+  superClasses <- selectSuperClasses(class)
+  superClassSlots <- vlapply(superClasses, slotNames)
+  ownSlotNames <- setdiff(slots, superClassSlots)
+  return(ownSlotNames)
+}
+
 ##------------------------------------------------------------##
 ## user visible functions:
 ##------------------------------------------------------------##
@@ -39,18 +52,23 @@ getS4SlotGSetterGenericAndMethods <- function(class, slot) {
   setterGeneric <- printSetterGenericWithFormatString(slot=slot)
   getterMethod <- printGetterMethodWithFormatString(class=class, slot=slot)
   setterMethod <- printSetterMethodWithFormatString(class=class, slot=slot)
-  funcs <- paste(getterGeneric,
-                 setterGeneric,
-                 getterMethod,
-                 setterMethod, sep="\n")
+  funcs <- c(getterGeneric,
+             setterGeneric,
+             getterMethod,
+             setterMethod)
   return(funcs)
 }
 
 getS4AllSlotsGSetterGenericAndMethods <- function(class) {
   slots <- slotNames(class)
-  slotGenericAndMethods <- sapply(slots, getS4SlotGSetterGenericAndMethods, class=class)
+  slotGenericAndMethods <- vlapply(slots, getS4SlotGSetterGenericAndMethods, class=class)
   return(slotGenericAndMethods)
+}
 
+getS4AllOwnSlotsGSetterGenericAndMethods <- function(class) {
+  ownSlotNames <- getOwnSlotNames(class)
+  ownGSetters <- vlapply(ownSlotNames, getS4SlotGSetterGenericAndMethods, class=class)
+  return(ownGSetters)
 }
 
 writeS4SlotGSetterGenericAndMethods <- function(class, slot, con=stdout(),...) {
@@ -61,4 +79,9 @@ writeS4SlotGSetterGenericAndMethods <- function(class, slot, con=stdout(),...) {
 writeS4AllSlotsGSetterGenericAndMethods <- function(class, con=stdout(), ...) {
   funcs <- getS4AllSlotsGSetterGenericAndMethods(class=class)
   writeLines(text=funcs, con=con, ...)
+}
+
+writeS4AllOwnSlotsGSetterGenericAndMethods <- function(class, con=stdout(), ...) {
+  funcs <- getS4AllOwnSlotsGSetterGenericAndMethods(class=class)
+  writeLines(text=funcs, con=con,...)
 }

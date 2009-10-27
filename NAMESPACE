@@ -2,5 +2,8 @@
 export("getS4SlotGSetterGenericAndMethods",
        "getS4AllSlotsGSetterGenericAndMethods",
        "writeS4SlotGSetterGenericAndMethods",
-       "writeS4AllSlotsGSetterGenericAndMethods"
+       "writeS4AllSlotsGSetterGenericAndMethods",
+       "getOwnSlotNames",
+       "getS4AllOwnSlotsGSetterGenericAndMethods",
+       "writeS4AllOwnSlotsGSetterGenericAndMethods"
        )
